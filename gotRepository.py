@@ -1,4 +1,5 @@
 import os
+import configparser
 
 
 # Going to replace git references with got to avoid file confusion with my actual git version control folder 
@@ -30,15 +31,26 @@ class GotRepository(object):
             vers = int(self.conf.get("core", "repositoryformatversion")) # transform string received into int
             if vers != 0:
                 raise Exception("Unsupported repositoryformatversion: {vers}")
-            
-    """ Note on the use of * --
-        This basically means that any extra paramters will be accepted and collected as a tuple inside path
-    """
-    def repo_path(repo, *path):
+
+
+""" Note on the use of * --
+    This basically means that any extra paramters will be accepted and collected as a tuple inside path
+"""
+
+def repo_path(repo, *path):
         """ Compute path under repo's gitdir."""
+        """ returns the full path as a file path """
         return os.path.join(repo.gotdir, *path)
     
-    def repo_file(repo, *path, mkdir=False):
-        
-        if repo_dir(path, *path[:-1], mkdir=mkdir):
-            return repo_path(repo, *path)
+def repo_file(repo, *path, mkdir=False):
+
+    # similar to repo path but creates dirname(*path) if absent
+    # If mkdir is true it will return the new path of the new directory
+    if repo_dir(path, *path[:-1], mkdir=mkdir):
+        return repo_path(repo, *path)
+    
+def repo_dir(repo, *path, mkdir=False):
+    """Samme as repo_path, but mkdir *path if absent if mkdir"""
+    """ Creates directory if mkdir is true"""
+
+    path = repo_path(repo, *path)
