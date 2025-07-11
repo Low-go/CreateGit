@@ -46,3 +46,19 @@ def main(argv=sys.argv[1:]):
         case "status"       : cmd_status(args)
         case "tag"          : cmd_tag(args)
         case _              : print("Bad command.")
+
+
+# Going to replace git references with got to avoid file confusion with my actual git version control folder 
+class GitRepository(object):
+    """ A got repository """
+
+    worktree = None
+    gotdir = None
+    conf = None
+
+    def __init__(self, path, force =False):
+        self.worktree = path
+        self.gotdir = os.path.join(path, ".got") # whatever directory we are inside plus the obvious .git folder 
+
+        if not (force or os.path.isdir(self.gotdir)):
+            raise Exception(f"Not a Git repository {path}")
